@@ -1,21 +1,26 @@
 # Provider configuration for the dev environment.
 terraform {
-  required_version = ">= 1.5"
+  required_version = "~> 1.14"
 
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 5.0"
+      version = "~> 6.0"
     }
   }
 
-  # Phase 1: local state. Phase 2: migrate to S3.
-  # backend "s3" { ... }  # Uncommented in Phase 2
+  backend "s3" {
+    bucket       = "platform-lab-terraform-state-438776351648"
+    key          = "dev/terraform.tfstate"
+    region       = "eu-central-1"
+    profile      = "terraform"
+    use_lockfile = true
+    encrypt      = true
+  }
 }
 
 provider "aws" {
   region = var.aws_region
-  profile = "terraform"
 
   default_tags {
     tags = {
